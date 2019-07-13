@@ -1,19 +1,35 @@
-import React from 'react';
+import React, { useMemo } from 'react';
+import { useStateValue } from '../StateProvider';
 
-export const Config = (
-    {configuration, handleSubmit, onChange, resultIsActive}
-) => (
+
+export const Config = () => {
+  const [{ configuration, resultIsActive }, dispatch] = useStateValue();
+  const handleSubmitConfiguration = useMemo(() => (e) => {
+    e.preventDefault();
+    try {
+      dispatch({
+        type: 'submitConfiguration',
+        newResult: JSON.parse(configuration),
+      });
+    } catch (error) {
+      alert(`invalid JSON format \n ${error.message}`);
+    }
+  }, [configuration, dispatch]);
+  return (
       <form
-          onSubmit={handleSubmit}
+          onSubmit={handleSubmitConfiguration}
           className={resultIsActive ? 'd-none' : 'd-block'}
       >
         <div className="row justify-content-md-center">
           <div className="">
-          <textarea
+					<textarea
               rows="20"
               cols="50"
               value={configuration}
-              onChange={onChange}
+              onChange={(e) => dispatch({
+                type: 'setConfiguration',
+                newConfiguration: e.target.value,
+              })}
           />
           </div>
           <div className="col-md-3 offset-md-9">
@@ -24,5 +40,6 @@ export const Config = (
         </div>
       </form>
   );
+};
 
 export default Config;

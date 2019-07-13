@@ -27,3 +27,9 @@ export const defaultConfiguration =  '{\n'
 export const defaultResults = {items: []};
 
 export const TEXTAREA = 'textarea';
+
+export const initialState = {
+    resultIsActive: false,
+    result: defaultResults,
+    configuration: defaultConfiguration,
+};

@@ -1,42 +1,46 @@
 import React, { useState } from 'react';
-import downloadFormData from "../utils/downloadFormData";
-import { TEXTAREA } from "../const";
+import downloadFormData from '../utils/downloadFormData';
+import { TEXTAREA } from '../const';
+import { useStateValue } from '../StateProvider';
 
 
-export const Result = (
-    {resultObject, handleResultCancel, resultIsActive}
-) => {
+export const Result = () => {
   const [formData, setFormData] = useState({});
-
+  const [{ result, resultIsActive }, dispatch] = useStateValue();
   const renderField = (item) => (
-        <div
-            key={item.label}
-            className="form-group row"
-        >
-          <label className="col-md-4 col-form-label">
-            {item.label}
-          </label>
-          <div className="col-md-8">
-            {React.createElement(
-                item.label === TEXTAREA ? TEXTAREA : 'input',
-                {
-                  classNam: "form-control",
-                  onChange: (e) => setFormData({ ...formData, [item.label]: e.target.value}),
-                  ...item
-                }
-            )}
-          </div>
+      <div
+          key={item.label}
+          className="form-group row"
+      >
+        <label className="col-md-4 col-form-label">
+          {item.label}
+        </label>
+        <div className="col-md-8">
+          {React.createElement(
+              item.label === TEXTAREA ? TEXTAREA : 'input',
+              {
+                className: 'form-control',
+                onChange: (e) => setFormData({ ...formData, [item.label]: e.target.value }),
+                ...item,
+              }
+          )}
         </div>
-    );
+      </div>
+  );
 
-  return resultObject.items.length !== 0 ? (
+  return result.items.length !== 0 ? (
       <div
           className={resultIsActive ? 'd-block' : 'd-none'}
       >
-        {resultObject.items.map(renderField)}
+        {result.items.map(renderField)}
         <div className="row">
           <div className="col-md-2 offset-md-8">
-            <button onClick={handleResultCancel} className="btn btn-primary">
+            <button
+                onClick={() => dispatch({
+                  type: 'cancelConfiguration',
+                })}
+                className="btn btn-primary"
+            >
               Cancel
             </button>
           </div>
@@ -47,7 +51,7 @@ export const Result = (
           </div>
         </div>
       </div>
-  ) : null
-}
+  ) : null;
+};
 
 export default Result;
